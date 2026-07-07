@@ -214,3 +214,11 @@ export async function deleteEmergencyContact(contactId) {
     .delete()
     .eq('id', contactId)
 }
+
+export async function deleteAccount() {
+  const { data: { session } } = await supabase.auth.getSession()
+  const { data, error } = await supabase.functions.invoke('delete-account', {
+    headers: { Authorization: `Bearer ${session?.access_token}` }
+  })
+  return { data, error }
+}

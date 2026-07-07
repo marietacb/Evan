@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import {
   upsertProfile, signOut, acceptLinkage,
   getEmergencyContacts, addEmergencyContact, deleteEmergencyContact,
+  deleteAccount,
 } from '../services/supabase'
 import BottomNav from '../components/shared/BottomNav'
 
@@ -26,6 +27,8 @@ export default function SettingsPage() {
   const [contactPhone, setContactPhone] = useState('')
   const [contactError, setContactError] = useState('')
   const [contactLoading, setContactLoading] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (profile?.role !== 'patient' || !session?.user?.id) return
@@ -94,6 +97,17 @@ export default function SettingsPage() {
   async function handleLogout() {
     await signOut()
     navigate('/')
+  }
+
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    const { error } = await deleteAccount()
+    setDeleting(false)
+    if (error) {
+      alert('Error eliminant el compte: ' + error.message)
+      return
+    }
+    window.location.href = '/login'
   }
 
   return (
@@ -247,6 +261,78 @@ export default function SettingsPage() {
         </button>
 
         
+
+        <button
+          onClick={() => setShowDeleteConfirm(true)}
+          style={{
+            background: '#D9534F',
+            border: 'none',
+            borderRadius: 12,
+            padding: '14px',
+            fontFamily: 'Poppins, sans-serif',
+            fontSize: 15,
+            fontWeight: 600,
+            color: '#FFFFFF',
+            cursor: 'pointer',
+            width: '100%',
+            minHeight: 48,
+          }}
+        >
+          Eliminar compte
+        </button>
+
+        {showDeleteConfirm && (
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: 16,
+            padding: 20,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          }}>
+            <p style={{ fontSize: 15, color: '#2C2C2C', marginBottom: 16 }}>
+              Estàs segur? Esta acció no es pot desfer i eliminarà totes les teues dades.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                style={{
+                  flex: 1,
+                  background: 'none',
+                  border: '2px solid #E0E0E0',
+                  borderRadius: 12,
+                  padding: '14px',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#5B6B7A',
+                  cursor: 'pointer',
+                  minHeight: 48,
+                }}
+              >
+                Cancel·lar
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                style={{
+                  flex: 1,
+                  background: '#D9534F',
+                  border: 'none',
+                  borderRadius: 12,
+                  padding: '14px',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: '#FFFFFF',
+                  cursor: deleting ? 'not-allowed' : 'pointer',
+                  minHeight: 48,
+                  opacity: deleting ? 0.7 : 1,
+                }}
+              >
+                {deleting ? 'Eliminant...' : 'Sí, eliminar'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Cerrar sesión */}
         <button
