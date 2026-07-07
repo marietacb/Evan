@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [consentAccepted, setConsentAccepted] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -28,6 +29,7 @@ export default function RegisterPage() {
     if (!fullName) { setError('Introdueix el teu nom'); return }
     if (password.length < 6) { setError('La contrasenya ha de tenir mínim 6 caràcters'); return }
     if (password !== passwordConfirm) { setError('Les contrasenyes no coincideixen'); return }
+    if (!consentAccepted) { setError('Has d\'acceptar el tractament de les teues dades per a continuar'); return }
 
     setLoading(true)
 
@@ -86,9 +88,22 @@ export default function RegisterPage() {
             onChange={e => setPasswordConfirm(e.target.value)} required />
         </div>
 
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 4 }}>
+          <input
+            type="checkbox"
+            id="consent"
+            checked={consentAccepted}
+            onChange={e => setConsentAccepted(e.target.checked)}
+            style={{ marginTop: 3 }}
+          />
+          <label htmlFor="consent" style={{ fontSize: 13, color: '#5B6B7A', lineHeight: 1.4 }}>
+            Accepte el tractament de les meues dades de salut d'acord amb la política de privacitat d'Evan.
+          </label>
+        </div>
+
         {error && <p className="error-msg">{error}</p>}
 
-        <button className="btn-primary" type="submit" disabled={loading} style={{ marginTop: 8 }}>
+        <button className="btn-primary" type="submit" disabled={loading || !consentAccepted} style={{ marginTop: 8 }}>
           {loading ? 'Carregant...' : "Registra't"}
         </button>
       </form>
