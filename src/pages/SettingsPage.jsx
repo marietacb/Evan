@@ -102,11 +102,13 @@ export default function SettingsPage() {
   async function handleDeleteAccount() {
     setDeleting(true)
     const { error } = await deleteAccount()
-    setDeleting(false)
     if (error) {
+      setDeleting(false)
       alert('Error eliminant el compte: ' + error.message)
       return
     }
+    await signOut()
+    setDeleting(false)
     window.location.href = '/login'
   }
 
