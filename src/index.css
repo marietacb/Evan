@@ -1,0 +1,115 @@
+/* index.css Estilos globales */
+/* Varibales de colores y tipografía para toda la app */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root{
+  --blue: #5B8DB8;
+  --green: #7BAF9E;
+  --bg: #F5F5F5;
+  --text: #2C2C2C;
+  --text-secondary: #5B6B7A;
+  --white: #FFFFFF;
+  --shadow: 0 4px 16px rgba(91, 141, 184, 0.12);
+  --radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100svh;
+}
+
+/*Contenedor central para todas las pantallas de auth*/
+.screen {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/*Boton principal*/
+.btn-primary {
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  min-height: 48px;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*Botón secundario*/
+.btn-secondary {
+  background: transparent;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  min-height: 48px;
+  transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+  background: rgba(91, 141, 184, 0.08);
+}
+
+/*Campo de texto reutilizable*/
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: var(--blue);
+}
+
+.input-field::placeholder {
+  color: var(--text-secondary);
+}
+
+/*Mensaje de error*/
+.error-msg {
+  color: #E07B4A;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+}
