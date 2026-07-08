@@ -82,7 +82,7 @@ export default function PsychologistHomePage() {
       fontFamily: 'Poppins, sans-serif',
       paddingBottom: 32,
     }}>
-      <div style={{ padding: '52px 20px 20px', background: COLORS.white }}>
+      <div className="page-header" style={{ background: COLORS.white }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: COLORS.text }}>
           Hola, Dr. {drName.split(' ').pop()}
         </h1>
@@ -91,7 +91,7 @@ export default function PsychologistHomePage() {
         </p>
       </div>
 
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div className="page-body">
         {alertPatient && (
           <div style={{
             background: '#FFF0E8',
@@ -141,7 +141,8 @@ export default function PsychologistHomePage() {
             Encara no tens pacients vinculats.
           </p>
         ) : (
-          patients.map(patient => {
+          <div className="patients-grid">
+          {patients.map(patient => {
             const info = riskInfo(patient.riskLevel)
             const initial = patient.name.charAt(0).toUpperCase()
             return (
@@ -196,7 +197,8 @@ export default function PsychologistHomePage() {
                 </button>
               </div>
             )
-          })
+          })}
+          </div>
         )}
 
         <button

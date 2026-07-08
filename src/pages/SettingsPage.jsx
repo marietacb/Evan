@@ -124,15 +124,15 @@ export default function SettingsPage() {
     }}>
 
       {/* Cabecera */}
-      <div style={{
+      <div className="page-header" style={{
         background: 'linear-gradient(135deg, #5B8DB8, #7BAF9E)',
-        padding: '48px 24px 32px',
         color: '#FFFFFF',
+        paddingBottom: 32,
       }}>
         <h1 style={{ fontSize: 24, fontWeight: 700 }}>Configuració ⚙️</h1>
       </div>
 
-      <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div className="page-body">
 
         {/* Sección datos personales */}
         <div style={{ background: '#FFFFFF', borderRadius: 16, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>

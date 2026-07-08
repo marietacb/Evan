@@ -52,8 +52,8 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white, justifyContent: 'flex-start', paddingTop: 48 }}>
-
+    <div className="screen screen--auth" style={{ justifyContent: 'flex-start', paddingTop: 48 }}>
+      <div className="auth-panel">
       <div style={{ width: '100%', marginBottom: 28 }}>
         <div style={{ height: 4, background: COLORS.border, borderRadius: 2, overflow: 'hidden', marginBottom: 10 }}>
           <div style={{
@@ -147,6 +147,7 @@ export default function OnboardingPage() {
             onClick={handleNext}
           />
         )}
+      </div>
       </div>
     </div>
   )

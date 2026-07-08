@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { updateRole } from '../services/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { AuthBackButton, COLORS } from '../components/shared/EvanUI'
+import EvanLogo from '../components/shared/EvanLogo'
 
 export default function RoleSelectPage() {
   const navigate = useNavigate()
@@ -28,7 +29,18 @@ export default function RoleSelectPage() {
   }
 
   return (
-    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white }}>
+    <div className="screen screen--auth">
+      <div className="auth-brand">
+        <EvanLogo className="evan-logo" />
+        <h1 style={{ fontWeight: 700, fontSize: 34, color: COLORS.text, marginTop: 24, marginBottom: 8 }}>
+          Evan
+        </h1>
+        <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
+          El teu acompanyant virtual
+        </p>
+      </div>
+
+      <div className="auth-panel">
       <AuthBackButton onClick={() => navigate(-1)} />
 
       <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 8 }}>
@@ -78,6 +90,7 @@ export default function RoleSelectPage() {
       </div>
 
       {error && <p className="error-msg" style={{ marginTop: 16 }}>{error}</p>}
+      </div>
     </div>
   )
 }

@@ -6,20 +6,20 @@ export default function WelcomePage() {
   const navigate = useNavigate()
 
   return (
-    <div className="screen" style={{ justifyContent: 'space-between', paddingTop: 72, paddingBottom: 48, background: COLORS.white }}>
-
-      <div style={{ textAlign: 'center', width: '100%' }}>
-        <h1 style={{ fontWeight: 700, fontSize: 34, color: COLORS.text, marginBottom: 8 }}>
-          Evan
-        </h1>
-        <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
-          El teu acompanyant virtual
-        </p>
+    <div className="welcome-screen">
+      <div className="welcome-left">
+        <div className="welcome-hero">
+          <h1 style={{ fontWeight: 700, fontSize: 34, color: COLORS.text, marginBottom: 8 }}>
+            Evan
+          </h1>
+          <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
+            El teu acompanyant virtual
+          </p>
+        </div>
+        <EvanLogo className="evan-logo" />
       </div>
 
-      <EvanLogo size={160} />
-
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="welcome-actions">
         <button className="btn-primary" onClick={() => navigate('/register')} style={{ borderRadius: 14 }}>
           Registrar-se
         </button>

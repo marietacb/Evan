@@ -146,10 +146,10 @@ export default function DiaryPage() {
     }}>
 
       {/* Cabecera */}
-      <div style={{
+      <div className="page-header" style={{
         background: 'linear-gradient(135deg, #5B8DB8, #7BAF9E)',
-        padding: '48px 20px 20px',
         display: 'flex', alignItems: 'center', gap: 12,
+        paddingBottom: 20,
       }}>
         <button onClick={() => navigate('/home')} style={{
           background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 10,
@@ -162,7 +162,10 @@ export default function DiaryPage() {
       </div>
 
       {/* Mensajes */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{
+        flex: 1, overflowY: 'auto', padding: '20px var(--page-padding-x)',
+        display: 'flex', flexDirection: 'column', gap: 12,
+      }}>
 
         {loading && (
           <div style={{ textAlign: 'center', color: '#5B6B7A', fontSize: 14, marginTop: 40 }}>
@@ -209,7 +212,7 @@ export default function DiaryPage() {
       {/* Input y botones */}
       <div style={{
         background: '#FFFFFF', borderTop: '1px solid #E0E0E0',
-        padding: '12px 16px 28px', display: 'flex', flexDirection: 'column', gap: 10,
+        padding: '12px var(--page-padding-x) 28px', display: 'flex', flexDirection: 'column', gap: 10,
       }}>
         <div style={{ display: 'flex', gap: 8 }}>
           <input

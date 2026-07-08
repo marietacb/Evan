@@ -110,15 +110,7 @@ export default function EmergencyPage() {
       flexDirection: 'column',
       paddingBottom: view === 'main' ? 80 : 0,
     }}>
-      <div style={{
-        flex: 1,
-        padding: view === 'main' ? '20px 20px 16px' : '20px 20px 32px',
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: 480,
-        margin: '0 auto',
-        width: '100%',
-      }}>
+      <div className="page-inner" style={{ paddingBottom: view === 'main' ? 16 : 32 }}>
         {view === 'main' && (
           <>
             <button onClick={() => navigate('/home')} style={{
@@ -131,12 +123,9 @@ export default function EmergencyPage() {
             <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 32 }}>
               Kit d'emergència
             </h1>
-            <div style={{
+            <div className="kit-grid" style={{
               flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
               justifyContent: 'center',
-              gap: 32,
             }}>
               <KitCard
                 icon="🫁"
@@ -202,12 +191,9 @@ function RegulateView({ onBreathing, onGrounding, onBack }) {
         Quina t'ajuda més ara?
       </p>
 
-      <div style={{
+      <div className="kit-grid" style={{
         flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
         justifyContent: 'center',
-        gap: 32,
       }}>
         <KitCard
           icon="🫁"

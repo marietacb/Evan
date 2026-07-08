@@ -54,6 +54,8 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <div className="app-shell">
+        <div className="app-content">
       <Routes>
 
         {/* Rutas públicas */}
@@ -93,6 +95,8 @@ export default function App() {
         />
 
       </Routes>
+        </div>
+      </div>
     </BrowserRouter>
   )
 }

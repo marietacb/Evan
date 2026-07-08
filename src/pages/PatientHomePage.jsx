@@ -15,7 +15,7 @@ export default function PatientHomePage() {
       fontFamily: 'Poppins, sans-serif',
       paddingBottom: 90,
     }}>
-      <div style={{ padding: '52px 20px 24px' }}>
+      <div className="page-header">
         <h1 style={{ fontSize: 26, fontWeight: 700, color: COLORS.text }}>
           Hola, {firstName}
         </h1>
@@ -24,7 +24,7 @@ export default function PatientHomePage() {
         </p>
       </div>
 
-      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="home-grid">
         <HomeCard
           emoji="📓"
           title="Diari intel·ligent"
@@ -33,7 +33,7 @@ export default function PatientHomePage() {
           onClick={() => navigate('/diary')}
         />
         <HomeCard
-          emoji="🆘"
+          emoji="🌪️"
           title="Kit d'emergència"
           subtitle="Accés ràpid en moments difícils"
           bg="#E3EEF7"

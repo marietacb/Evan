@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { signUp, upsertProfile } from '../services/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { AuthBackButton, COLORS } from '../components/shared/EvanUI'
+import EvanLogo from '../components/shared/EvanLogo'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -38,7 +39,18 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white }}>
+    <div className="screen screen--auth">
+      <div className="auth-brand">
+        <EvanLogo className="evan-logo" />
+        <h1 style={{ fontWeight: 700, fontSize: 34, color: COLORS.text, marginTop: 24, marginBottom: 8 }}>
+          Evan
+        </h1>
+        <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
+          El teu acompanyant virtual
+        </p>
+      </div>
+
+      <div className="auth-panel">
       <AuthBackButton onClick={() => navigate('/')} />
 
       <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 28 }}>
@@ -77,6 +89,7 @@ export default function RegisterPage() {
           Inicia sessió
         </Link>
       </p>
+      </div>
     </div>
   )
 }

@@ -37,14 +37,14 @@ export default function PatientDashboardPage() {
       fontFamily: 'Poppins, sans-serif',
       paddingBottom: 90,
     }}>
-      <div style={{ padding: '52px 20px 20px', background: COLORS.white }}>
+      <div className="page-header" style={{ background: COLORS.white }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: COLORS.text }}>El teu progrés</h1>
         <p style={{ fontSize: 14, color: COLORS.textMuted, marginTop: 4 }}>
           {PERIOD_LABELS[period]}
         </p>
       </div>
 
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="page-body">
         {streak > 1 && (
           <div style={{
             background: '#FFF4E5',
@@ -72,9 +72,13 @@ export default function PatientDashboardPage() {
           </div>
         ) : (
           <>
-            <MoodChart data={chartData} />
-            <SleepChart data={chartData} />
-            <OtherIndicators social={avgSocial} physical={avgPhysical} nutrition={avgNutrition} />
+            <div className="dashboard-charts">
+              <MoodChart data={chartData} />
+              <SleepChart data={chartData} />
+              <div className="chart-full">
+                <OtherIndicators social={avgSocial} physical={avgPhysical} nutrition={avgNutrition} />
+              </div>
+            </div>
           </>
         )}
       </div>

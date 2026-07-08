@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { signIn } from '../services/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { AuthBackButton, COLORS } from '../components/shared/EvanUI'
+import EvanLogo from '../components/shared/EvanLogo'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -29,51 +30,63 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white }}>
-      <AuthBackButton onClick={() => navigate('/')} />
+    <div className="screen screen--auth">
+      <div className="auth-brand">
+        <EvanLogo className="evan-logo" />
+        <h1 style={{ fontWeight: 700, fontSize: 34, color: COLORS.text, marginTop: 24, marginBottom: 8 }}>
+          Evan
+        </h1>
+        <p style={{ color: COLORS.textMuted, fontSize: 16 }}>
+          El teu acompanyant virtual
+        </p>
+      </div>
 
-      <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 32 }}>
-        Benvingut de nou
-      </h1>
+      <div className="auth-panel">
+        <AuthBackButton onClick={() => navigate('/')} />
 
-      <form onSubmit={handleLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <input
-          className="input-field"
-          type="email"
-          placeholder="Correu electrònic"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="input-field"
-          type="password"
-          placeholder="Contrasenya"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
+        <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 32 }}>
+          Benvingut de nou
+        </h1>
 
-        {error && <p className="error-msg">{error}</p>}
+        <form onSubmit={handleLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <input
+            className="input-field"
+            type="email"
+            placeholder="Correu electrònic"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <input
+            className="input-field"
+            type="password"
+            placeholder="Contrasenya"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
 
-        <Link
-          to="/forgot-password"
-          style={{ color: COLORS.blue, fontSize: 14, textDecoration: 'none', alignSelf: 'flex-start' }}
-        >
-          Has oblidat la contrasenya?
-        </Link>
+          {error && <p className="error-msg">{error}</p>}
 
-        <button className="btn-primary" type="submit" disabled={loading} style={{ marginTop: 8, borderRadius: 14 }}>
-          {loading ? 'Carregant...' : 'Inicia sessió'}
-        </button>
-      </form>
+          <Link
+            to="/forgot-password"
+            style={{ color: COLORS.blue, fontSize: 14, textDecoration: 'none', alignSelf: 'flex-start' }}
+          >
+            Has oblidat la contrasenya?
+          </Link>
 
-      <p style={{ color: COLORS.textMuted, fontSize: 14, marginTop: 'auto', textAlign: 'center', paddingTop: 32 }}>
-        No tens compte?{' '}
-        <Link to="/register" style={{ color: COLORS.blue, fontWeight: 600, textDecoration: 'none' }}>
-          Registra't
-        </Link>
-      </p>
+          <button className="btn-primary" type="submit" disabled={loading} style={{ marginTop: 8, borderRadius: 14 }}>
+            {loading ? 'Carregant...' : 'Inicia sessió'}
+          </button>
+        </form>
+
+        <p style={{ color: COLORS.textMuted, fontSize: 14, marginTop: 'auto', textAlign: 'center', paddingTop: 32 }}>
+          No tens compte?{' '}
+          <Link to="/register" style={{ color: COLORS.blue, fontWeight: 600, textDecoration: 'none' }}>
+            Registra't
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

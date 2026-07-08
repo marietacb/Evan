@@ -12,6 +12,9 @@
   --white: #FFFFFF;
   --shadow: 0 4px 16px rgba(91, 141, 184, 0.12);
   --radius: 16px;
+  --app-max-width: 100%;
+  --page-padding-x: 20px;
+  --auth-form-max: 520px;
 }
 
 * {
@@ -27,17 +30,270 @@ body{
   min-height: 100svh;
 }
 
-/*Contenedor central para todas las pantallas de auth*/
+@media (min-width: 640px) {
+  :root {
+    --page-padding-x: 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-padding-x: 64px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --page-padding-x: 80px;
+  }
+}
+
+.app-shell {
+  min-height: 100svh;
+  width: 100%;
+  background: var(--bg);
+}
+
+.app-content {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 100svh;
+}
+
+/* Pantalla a anchura completa */
 .screen {
   min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px var(--page-padding-x);
+}
+
+/* Formularios de auth: columna centrada en móvil, dos columnas en escritorio */
+.screen--auth {
+  align-items: stretch;
+  background: var(--white);
+}
+
+.screen--auth .auth-panel {
+  width: 100%;
+  max-width: var(--auth-form-max);
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  .screen--auth {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(48px, 8vw, 120px);
+    padding: 48px var(--page-padding-x);
+  }
+
+  .screen--auth .auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    max-width: 480px;
+  }
+
+  .screen--auth .auth-brand h1 {
+    font-size: 42px !important;
+  }
+
+  .screen--auth .auth-panel {
+    flex: 0 0 min(var(--auth-form-max), 42vw);
+    margin: 0;
+  }
+}
+
+.screen--auth .auth-brand {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .screen--auth .auth-brand {
+    display: flex;
+  }
+}
+
+/* Bienvenida */
+.welcome-screen {
+  min-height: 100svh;
+  width: 100%;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 72px var(--page-padding-x) 48px;
+  gap: 32px;
+}
+
+.welcome-left {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 24px 20px;
-  max-width: 480px;
-  margin: 0 auto;
+  gap: 32px;
   width: 100%;
+}
+
+.welcome-hero {
+  text-align: center;
+  width: 100%;
+}
+
+.welcome-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .welcome-screen {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 48px var(--page-padding-x);
+    gap: clamp(64px, 10vw, 160px);
+  }
+
+  .welcome-left {
+    flex: 1;
+    align-items: flex-start;
+    max-width: 560px;
+  }
+
+  .welcome-hero {
+    text-align: left;
+  }
+
+  .welcome-hero h1 {
+    font-size: clamp(40px, 5vw, 56px) !important;
+  }
+
+  .welcome-hero p {
+    font-size: 18px !important;
+  }
+
+  .welcome-actions {
+    flex: 0 0 min(420px, 36vw);
+  }
+}
+
+.page-header {
+  padding: 52px var(--page-padding-x) 20px;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    padding-top: 64px;
+  }
+}
+
+.page-body {
+  padding: 20px var(--page-padding-x);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-inner {
+  flex: 1;
+  width: 100%;
+  padding: 20px var(--page-padding-x) 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 var(--page-padding-x);
+}
+
+@media (min-width: 640px) {
+  .home-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.patients-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .patients-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.kit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .kit-grid {
+    flex-direction: row;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .kit-grid > * {
+    flex: 1;
+  }
+}
+
+.dashboard-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .dashboard-charts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-charts .chart-full {
+    grid-column: 1 / -1;
+  }
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: var(--white);
+  border-top: 1px solid #E8EAED;
+  display: flex;
+  z-index: 100;
+}
+
+.evan-logo {
+  width: clamp(140px, 18vw, 240px);
+  height: clamp(140px, 18vw, 240px);
+  flex-shrink: 0;
 }
 
 /*Boton principal*/

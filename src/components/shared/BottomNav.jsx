@@ -12,16 +12,7 @@ export default function BottomNav() {
   ]
 
   return (
-    <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: COLORS.white,
-      borderTop: `1px solid ${COLORS.border}`,
-      display: 'flex',
-      zIndex: 100,
-    }}>
+    <nav className="bottom-nav">
       {tabs.map((tab, i) => {
         const active = location.pathname === tab.path
         return (

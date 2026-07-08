@@ -26,8 +26,8 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="screen">
-
+    <div className="screen screen--auth">
+      <div className="auth-panel" style={{ justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <span style={{ fontSize: 48 }}>🔑</span>
         <h1 style={{ fontWeight: 700, fontSize: 24, color: '#2C2C2C', marginTop: 12 }}>
@@ -69,6 +69,7 @@ export default function ForgotPasswordPage() {
         </form>
       )}
 
+      </div>
     </div>
   )
 }
