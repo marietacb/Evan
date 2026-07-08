@@ -9,6 +9,7 @@ import {
   deleteAccount,
 } from '../services/supabase'
 import BottomNav from '../components/shared/BottomNav'
+import { ContactRow, AddContactButton, COLORS } from '../components/shared/EvanUI'
 
 export default function SettingsPage() {
   const { profile, session, refreshProfile } = useAuth()
@@ -27,6 +28,7 @@ export default function SettingsPage() {
   const [contactPhone, setContactPhone] = useState('')
   const [contactError, setContactError] = useState('')
   const [contactLoading, setContactLoading] = useState(false)
+  const [showAddContact, setShowAddContact] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -85,6 +87,7 @@ export default function SettingsPage() {
     setEmergencyContacts(prev => [...prev, data])
     setContactName('')
     setContactPhone('')
+    setShowAddContact(false)
   }
 
   async function handleDeleteContact(contactId) {
@@ -160,34 +163,26 @@ export default function SettingsPage() {
         </div>
 
         {profile?.role === 'patient' && (
-          <div style={{ background: '#FFFFFF', borderRadius: 16, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-            <p style={{ fontWeight: 700, fontSize: 15, color: '#2C2C2C', marginBottom: 8 }}>
+          <div style={{ background: COLORS.white, borderRadius: 16, padding: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+            <p style={{ fontWeight: 700, fontSize: 15, color: COLORS.text, marginBottom: 6 }}>
               Contactes d'emergència
             </p>
-            <p style={{ fontSize: 13, color: '#5B6B7A', marginBottom: 16 }}>
-              Afig persones de confiança que apareixeran al kit d'emergència.
+            <p style={{ fontSize: 13, color: COLORS.textSecondary, marginBottom: 16 }}>
+              Persones que et poden ajudar
             </p>
 
             {emergencyContacts.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
-                {emergencyContacts.map(contact => (
-                  <div
-                    key={contact.id}
-                    style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      background: '#F5F5F5', borderRadius: 12, padding: '12px 14px',
-                    }}
-                  >
-                    <div>
-                      <p style={{ fontWeight: 600, fontSize: 14, color: '#2C2C2C' }}>{contact.name}</p>
-                      <p style={{ fontSize: 13, color: '#5B6B7A' }}>{contact.phone}</p>
-                    </div>
+                {emergencyContacts.map((contact, i) => (
+                  <div key={contact.id}>
+                    <ContactRow contact={contact} colorIndex={i} callColor={COLORS.green} />
                     <button
                       onClick={() => handleDeleteContact(contact.id)}
                       style={{
-                        background: 'none', border: '1.5px solid #E0E0E0', borderRadius: 8,
-                        padding: '6px 12px', fontFamily: 'Poppins, sans-serif',
-                        fontSize: 12, fontWeight: 600, color: '#5B6B7A', cursor: 'pointer',
+                        background: 'none', border: 'none', marginTop: 6,
+                        fontFamily: 'Poppins, sans-serif', fontSize: 12,
+                        fontWeight: 600, color: COLORS.textMuted, cursor: 'pointer',
+                        padding: '4px 0', width: '100%', textAlign: 'right',
                       }}
                     >
                       Eliminar
@@ -197,32 +192,48 @@ export default function SettingsPage() {
               </div>
             )}
 
-            <label style={labelStyle}>Nom</label>
-            <input
-              className="input-field"
-              type="text"
-              value={contactName}
-              onChange={e => setContactName(e.target.value)}
-              placeholder="Ex: Maria García"
-              style={{ marginBottom: 12 }}
-            />
-            <label style={labelStyle}>Telèfon</label>
-            <input
-              className="input-field"
-              type="tel"
-              value={contactPhone}
-              onChange={e => setContactPhone(e.target.value)}
-              placeholder="Ex: 600 123 456"
-              style={{ marginBottom: 12 }}
-            />
-            {contactError && <p className="error-msg" style={{ marginBottom: 8 }}>{contactError}</p>}
-            <button
-              className="btn-secondary"
-              onClick={handleAddContact}
-              disabled={contactLoading}
-            >
-              {contactLoading ? 'Carregant...' : 'Afegir'}
-            </button>
+            {showAddContact ? (
+              <div style={{ marginBottom: 12 }}>
+                <label style={labelStyle}>Nom</label>
+                <input
+                  className="input-field"
+                  type="text"
+                  value={contactName}
+                  onChange={e => setContactName(e.target.value)}
+                  placeholder="Ex: Mare"
+                  style={{ marginBottom: 12 }}
+                />
+                <label style={labelStyle}>Telèfon</label>
+                <input
+                  className="input-field"
+                  type="tel"
+                  value={contactPhone}
+                  onChange={e => setContactPhone(e.target.value)}
+                  placeholder="Ex: +34 612 345 678"
+                  style={{ marginBottom: 12 }}
+                />
+                {contactError && <p className="error-msg" style={{ marginBottom: 8 }}>{contactError}</p>}
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => { setShowAddContact(false); setContactError('') }}
+                    style={{ flex: 1 }}
+                  >
+                    Cancel·lar
+                  </button>
+                  <button
+                    className="btn-primary"
+                    onClick={handleAddContact}
+                    disabled={contactLoading}
+                    style={{ flex: 1 }}
+                  >
+                    {contactLoading ? 'Carregant...' : 'Guardar'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <AddContactButton onClick={() => setShowAddContact(true)} />
+            )}
           </div>
         )}
 

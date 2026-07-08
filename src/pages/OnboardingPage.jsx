@@ -1,152 +1,153 @@
-// OnboardingPage.jsx — cuestionario inicial del paciente (3 pasos)
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { upsertProfile } from '../services/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { COLORS, PillButton } from '../components/shared/EvanUI'
 
 const TOTAL_STEPS = 3
+
+const GOALS = [
+  { emoji: '😰', label: 'Gestionar l\'ansietat' },
+  { emoji: '😔', label: 'Superar la depressió' },
+  { emoji: '🌱', label: 'Millorar el benestar general' },
+]
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
   const { session, refreshProfile } = useAuth()
 
   const [step, setStep] = useState(1)
+  const [goal, setGoal] = useState('')
   const [fullName, setFullName] = useState('')
   const [age, setAge] = useState('')
-  const [frequency, setFrequency] = useState('')
   const [notifTime, setNotifTime] = useState('21:00')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const progress = (step / TOTAL_STEPS) * 100
+  function handleNext() {
+    if (step === 1 && !goal) return
+    if (step === 2 && !fullName) return
+    if (step < TOTAL_STEPS) setStep(s => s + 1)
+    else handleFinish()
+  }
 
   async function handleFinish() {
     setLoading(true)
     setError('')
-
-    const userId = session?.user?.id
-    const { error: profileError } = await upsertProfile(userId, {
+    const { error: profileError } = await upsertProfile(session?.user?.id, {
       full_name: fullName,
       age: age ? parseInt(age) : null,
-      visit_frequency: frequency || null,
+      visit_frequency: goal || null,
       notification_time: notifTime,
       notification_enabled: true,
       language: 'ca',
     })
-
     if (profileError) {
       setError(profileError.message)
       setLoading(false)
       return
     }
-
     await refreshProfile()
     navigate('/home')
   }
 
   return (
-    <div className="screen">
+    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white, justifyContent: 'flex-start', paddingTop: 48 }}>
 
-      {/* Barra de progreso */}
-      <div style={{ width: '100%', marginBottom: 32 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <h1 style={{ fontWeight: 700, fontSize: 20, color: '#2C2C2C' }}>
-            Configurem el teu perfil
-          </h1>
-          <span style={{ fontSize: 13, color: '#5B6B7A' }}>{step}/{TOTAL_STEPS}</span>
+      <div style={{ width: '100%', marginBottom: 28 }}>
+        <div style={{ height: 4, background: COLORS.border, borderRadius: 2, overflow: 'hidden', marginBottom: 10 }}>
+          <div style={{
+            height: '100%',
+            width: `${(step / TOTAL_STEPS) * 100}%`,
+            background: COLORS.blue,
+            borderRadius: 2,
+            transition: 'width 0.3s',
+          }} />
         </div>
-        <div style={{ height: 6, background: '#E0E0E0', borderRadius: 3 }}>
-          <div style={{ height: 6, background: '#5B8DB8', borderRadius: 3, width: `${progress}%`, transition: 'width 0.4s' }} />
-        </div>
+        <p style={{ textAlign: 'center', fontSize: 13, color: COLORS.textMuted }}>{step} de {TOTAL_STEPS}</p>
       </div>
 
-      {/* Paso 1 — Datos personales */}
       {step === 1 && (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <label style={labelStyle}>Nom complet</label>
-            <input className="input-field" type="text" value={fullName}
-              onChange={e => setFullName(e.target.value)} placeholder="Ex: Maria García" />
+        <>
+          <h1 style={{ fontWeight: 700, fontSize: 24, color: COLORS.text, marginBottom: 8 }}>
+            Explica'ns una mica sobre tu
+          </h1>
+          <p style={{ color: COLORS.textSecondary, fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+            Les teues respostes ens ajuden a personalitzar l'experiència
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+            {GOALS.map(g => (
+              <button
+                key={g.label}
+                onClick={() => setGoal(g.label)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  width: '100%',
+                  padding: '18px 16px',
+                  borderRadius: 16,
+                  border: `1.5px solid ${goal === g.label ? COLORS.blue : COLORS.border}`,
+                  background: goal === g.label ? '#EBF3FA' : COLORS.white,
+                  cursor: 'pointer',
+                  fontFamily: 'Poppins, sans-serif',
+                  fontSize: 15,
+                  fontWeight: goal === g.label ? 600 : 500,
+                  color: goal === g.label ? COLORS.blue : COLORS.text,
+                  textAlign: 'left',
+                }}
+              >
+                <span style={{ fontSize: 24 }}>{g.emoji}</span>
+                {g.label}
+              </button>
+            ))}
           </div>
-          <div>
-            <label style={labelStyle}>Edat</label>
-            <input className="input-field" type="number" value={age}
-              onChange={e => setAge(e.target.value)} placeholder="Ex: 25" min={12} max={100} />
-          </div>
-        </div>
+        </>
       )}
 
-      {/* Paso 2 — Frecuencia de visitas */}
       {step === 2 && (
-        <div style={{ width: '100%' }}>
-          <p style={{ fontSize: 15, color: '#2C2C2C', fontWeight: 600, marginBottom: 16 }}>
-            Amb quina freqüència visites al psicòleg/a?
-          </p>
-          {['Setmanalment', 'Cada dues setmanes', 'Mensualment', 'Altra'].map(op => (
-            <button
-              key={op}
-              onClick={() => setFrequency(op)}
-              style={{
-                display: 'block',
-                width: '100%',
-                padding: '14px 16px',
-                borderRadius: 12,
-                border: frequency === op ? '2px solid #5B8DB8' : '1.5px solid #E0E0E0',
-                background: frequency === op ? '#EEF4FB' : '#FFFFFF',
-                color: frequency === op ? '#5B8DB8' : '#2C2C2C',
-                fontFamily: 'Poppins, sans-serif',
-                fontWeight: frequency === op ? 600 : 400,
-                fontSize: 15,
-                cursor: 'pointer',
-                textAlign: 'left',
-                marginBottom: 10,
-              }}
-            >
-              {op}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Paso 3 — Hora de notificación */}
-      {step === 3 && (
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <label style={labelStyle}>A quina hora vols fer el diari?</label>
-            <input className="input-field" type="time" value={notifTime}
-              onChange={e => setNotifTime(e.target.value)} />
+        <>
+          <h1 style={{ fontWeight: 700, fontSize: 24, color: COLORS.text, marginBottom: 24 }}>
+            Dades personals
+          </h1>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <input className="input-field" type="text" placeholder="Nom complet" value={fullName}
+              onChange={e => setFullName(e.target.value)} />
+            <input className="input-field" type="number" placeholder="Edat" value={age}
+              onChange={e => setAge(e.target.value)} min={12} max={100} />
           </div>
-          <p style={{ fontSize: 13, color: '#5B6B7A' }}>
-            Evan t'enviarà un recordatori cada dia a aquesta hora.
-          </p>
-          {error && <p className="error-msg">{error}</p>}
-        </div>
+        </>
       )}
 
-      {/* Botones de navegación */}
-      <div style={{ width: '100%', marginTop: 32, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {step === 3 && (
+        <>
+          <h1 style={{ fontWeight: 700, fontSize: 24, color: COLORS.text, marginBottom: 8 }}>
+            Recordatori del diari
+          </h1>
+          <p style={{ color: COLORS.textSecondary, fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+            A quina hora vols fer el diari cada dia?
+          </p>
+          <input className="input-field" type="time" value={notifTime}
+            onChange={e => setNotifTime(e.target.value)} />
+          {error && <p className="error-msg" style={{ marginTop: 12 }}>{error}</p>}
+        </>
+      )}
+
+      <div style={{ width: '100%', marginTop: 'auto', paddingTop: 32 }}>
         {step < TOTAL_STEPS ? (
-          <button className="btn-primary" onClick={() => setStep(s => s + 1)}
-            disabled={(step === 1 && !fullName) || (step === 2 && !frequency)}>
-            Continuar
-          </button>
+          <PillButton
+            label="Continuar →"
+            color={COLORS.blue}
+            onClick={handleNext}
+          />
         ) : (
-          <button className="btn-primary" onClick={handleFinish} disabled={loading}>
-            {loading ? 'Carregant...' : 'Finalitzar configuració'}
-          </button>
-        )}
-        {step > 1 && (
-          <button className="btn-secondary" onClick={() => setStep(s => s - 1)}>
-            Tornar
-          </button>
+          <PillButton
+            label={loading ? 'Carregant...' : 'Continuar →'}
+            color={COLORS.blue}
+            onClick={handleNext}
+          />
         )}
       </div>
-
     </div>
   )
 }
-
-const labelStyle = {
-  display: 'block', fontSize: 13, fontWeight: 600, color: '#2C2C2C', marginBottom: 6,
-}
-

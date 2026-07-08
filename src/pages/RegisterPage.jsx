@@ -1,9 +1,8 @@
-// RegisterPage.jsx — formulario de registro
-// Crea la cuenta en Supabase Auth y una fila en la tabla profiles
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { signUp, upsertProfile } from '../services/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { AuthBackButton, COLORS } from '../components/shared/EvanUI'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -17,10 +16,9 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Cuando la sesión está activa, redirige a selección de perfil
   useEffect(() => {
     if (session) navigate('/select-role')
-  }, [session])
+  }, [session, navigate])
 
   async function handleRegister(e) {
     e.preventDefault()
@@ -32,93 +30,53 @@ export default function RegisterPage() {
     if (!consentAccepted) { setError('Has d\'acceptar el tractament de les teues dades per a continuar'); return }
 
     setLoading(true)
-
-    // 1. Crear cuenta en Supabase Auth
     const { data, error: authError } = await signUp(email, password)
     if (authError) { setError(authError.message); setLoading(false); return }
 
-    // 2. Crear fila en profiles con el id del usuario recién creado
-    const userId = data.user.id
-    await upsertProfile(userId, { full_name: fullName })
-
+    await upsertProfile(data.user.id, { full_name: fullName })
     setLoading(false)
-    // La redirección la gestiona el useEffect cuando session esté disponible
   }
 
   return (
-    <div className="screen">
+    <div className="screen" style={{ alignItems: 'stretch', background: COLORS.white }}>
+      <AuthBackButton onClick={() => navigate('/')} />
 
-      {/* Cabecera */}
-      <div style={{ textAlign: 'center', marginBottom: 32 }}>
-        <div style={{
-          width: 64, height: 64, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #5B8DB8, #7BAF9E)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          margin: '0 auto 16px',
-        }}>
-          <span style={{ fontSize: 28 }}>🌿</span>
-        </div>
-        <h1 style={{ fontWeight: 700, fontSize: 24, color: '#2C2C2C' }}>Crea el teu compte</h1>
-      </div>
+      <h1 style={{ fontWeight: 700, fontSize: 26, color: COLORS.text, marginBottom: 28 }}>
+        Crea el teu compte
+      </h1>
 
-      {/* Formulario */}
       <form onSubmit={handleRegister} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
-
-        <div>
-          <label style={labelStyle}>Nom complet</label>
-          <input className="input-field" type="text" value={fullName}
-            onChange={e => setFullName(e.target.value)} placeholder="Ex: Maria García" required />
-        </div>
-
-        <div>
-          <label style={labelStyle}>Correu electrònic</label>
-          <input className="input-field" type="email" value={email}
-            onChange={e => setEmail(e.target.value)} required />
-        </div>
-
-        <div>
-          <label style={labelStyle}>Contrasenya</label>
-          <input className="input-field" type="password" value={password}
-            onChange={e => setPassword(e.target.value)} required />
-        </div>
-
-        <div>
-          <label style={labelStyle}>Confirma la contrasenya</label>
-          <input className="input-field" type="password" value={passwordConfirm}
-            onChange={e => setPasswordConfirm(e.target.value)} required />
-        </div>
+        <input className="input-field" type="text" placeholder="Nom complet" value={fullName}
+          onChange={e => setFullName(e.target.value)} required />
+        <input className="input-field" type="email" placeholder="Correu electrònic" value={email}
+          onChange={e => setEmail(e.target.value)} required />
+        <input className="input-field" type="password" placeholder="Contrasenya" value={password}
+          onChange={e => setPassword(e.target.value)} required />
+        <input className="input-field" type="password" placeholder="Confirmar contrasenya" value={passwordConfirm}
+          onChange={e => setPasswordConfirm(e.target.value)} required />
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginTop: 4 }}>
-          <input
-            type="checkbox"
-            id="consent"
-            checked={consentAccepted}
-            onChange={e => setConsentAccepted(e.target.checked)}
-            style={{ marginTop: 3 }}
-          />
-          <label htmlFor="consent" style={{ fontSize: 13, color: '#5B6B7A', lineHeight: 1.4 }}>
+          <input type="checkbox" id="consent" checked={consentAccepted}
+            onChange={e => setConsentAccepted(e.target.checked)} style={{ marginTop: 3 }} />
+          <label htmlFor="consent" style={{ fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.4 }}>
             Accepte el tractament de les meues dades de salut d'acord amb la política de privacitat d'Evan.
           </label>
         </div>
 
         {error && <p className="error-msg">{error}</p>}
 
-        <button className="btn-primary" type="submit" disabled={loading || !consentAccepted} style={{ marginTop: 8 }}>
-          {loading ? 'Carregant...' : "Registra't"}
+        <button className="btn-primary" type="submit" disabled={loading || !consentAccepted}
+          style={{ marginTop: 8, borderRadius: 14 }}>
+          {loading ? 'Carregant...' : 'Continuar'}
         </button>
       </form>
 
-      <p style={{ color: '#5B6B7A', fontSize: 14, marginTop: 24 }}>
+      <p style={{ color: COLORS.textMuted, fontSize: 14, marginTop: 'auto', textAlign: 'center', paddingTop: 32 }}>
         Ja tens compte?{' '}
-        <Link to="/login" style={{ color: '#5B8DB8', fontWeight: 600, textDecoration: 'none' }}>
+        <Link to="/login" style={{ color: COLORS.blue, fontWeight: 600, textDecoration: 'none' }}>
           Inicia sessió
         </Link>
       </p>
-
     </div>
   )
-}
-
-const labelStyle = {
-  display: 'block', fontSize: 13, fontWeight: 600, color: '#2C2C2C', marginBottom: 6,
 }

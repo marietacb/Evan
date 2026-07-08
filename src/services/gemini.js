@@ -5,8 +5,31 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY)
 const MODEL = 'gemini-2.5-flash'
 
+const MESSAGE_LIMIT_MIN = Number(import.meta.env.VITE_DIARY_MIN_MESSAGES) || (import.meta.env.DEV ? 8 : 5)
+const MESSAGE_LIMIT_MAX = Number(import.meta.env.VITE_DIARY_MAX_MESSAGES) || (import.meta.env.DEV ? 25 : 8)
+const RATE_LIMIT_RETRIES = import.meta.env.DEV ? 4 : 1
+const RATE_LIMIT_WAIT_MS = 20_000
+
 function isRateLimitError(err) {
   return err?.status === 429 || err?.message?.includes('429') || err?.message?.includes('Resource exhausted')
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function withRateLimitRetry(fn) {
+  let lastErr
+  for (let attempt = 0; attempt <= RATE_LIMIT_RETRIES; attempt++) {
+    try {
+      return await fn()
+    } catch (err) {
+      lastErr = err
+      if (!isRateLimitError(err) || attempt === RATE_LIMIT_RETRIES) throw err
+      await sleep(RATE_LIMIT_WAIT_MS)
+    }
+  }
+  throw lastErr
 }
 
 // System prompt que define el comportamiento de Evan durante el diario
@@ -25,7 +48,7 @@ Normes importants:
 - Parla sempre en valencià, de manera càlida i propera
 - Fes UNA sola pregunta cada vegada, no diverses
 - Escolta activament i respon amb empatia abans de fer la següent pregunta
-- La conversa ha de durar entre 5 i 8 missatges
+- La conversa ha de durar entre ${MESSAGE_LIMIT_MIN} i ${MESSAGE_LIMIT_MAX} missatges
 - Quan tinguis tota la informació, acomiada't amb un missatge càlid
 
 Quan l'usuari escrigui "FINALITZAR_CONVERSA", respon ÚNICAMENT amb aquest JSON (sense cap text addicional):
@@ -49,7 +72,7 @@ export async function startDiaryConversation(profile) {
 
   const chat = model.startChat({ history: [] })
 
-  const result = await chat.sendMessage('Inicia la conversa del diari')
+  const result = await withRateLimitRetry(() => chat.sendMessage('Inicia la conversa del diari'))
   const text = result.response.text()
 
   return { chat, firstMessage: text }
@@ -57,13 +80,13 @@ export async function startDiaryConversation(profile) {
 
 // Envía un mensaje del usuario y devuelve la respuesta de Evan
 export async function sendMessage(chat, userMessage) {
-  const result = await chat.sendMessage(userMessage)
+  const result = await withRateLimitRetry(() => chat.sendMessage(userMessage))
   return result.response.text()
 }
 
 export function getGeminiErrorMessage(err) {
   if (isRateLimitError(err)) {
-    return 'Has arribat al límit de peticions (5 per minut). Espera 1 minut i recarrega la pàgina.'
+    return 'Has arribat al límit de peticions de Gemini (5 per minut en el pla gratuït). Espera 1 minut i torna-ho a intentar.'
   }
   if (!import.meta.env.VITE_GEMINI_API_KEY) {
     return 'No s\'ha configurat la clau de l\'API de Gemini.'
